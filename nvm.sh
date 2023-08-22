@@ -3669,6 +3669,13 @@ nvm() {
       hash -r
       export NVM_BIN="${NVM_VERSION_DIR}/bin"
       export NVM_INC="${NVM_VERSION_DIR}/include/node"
+      # INFO: Add tmux compatibility
+      # REF: https://github.com/mikemimik/dotfiles/blob/main/bin/tmux-hook-clean-env
+      # Sets an environment variable specific to the tmux pane ID. This allows status
+      # elements in tmux to function correctly inside of a session.
+      if [ -n $TMUX ]; then
+        tmux setenv -g "TMUX_NVM_$(tmux display -p "#D" | tr -d %)" "$NVM_BIN"
+      fi
       if [ "${NVM_SYMLINK_CURRENT-}" = true ]; then
         command rm -f "${NVM_DIR}/current" && ln -s "${NVM_VERSION_DIR}" "${NVM_DIR}/current"
       fi
